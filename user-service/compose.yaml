@@ -1,0 +1,23 @@
+services:
+  rest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 13000:3000
+    environment:
+      - DB_NAME=userdb
+      - DB_PORT=5432
+      - DB_HOSTNAME=db
+      - DB_USER=dbuser
+      - DB_PASSWORD=password
+      - JWT_SECRET=secret
+      - USER_TOKEN_VALIDILITY_SECONDS=3600
+  db:
+    image: postgres:16
+    ports:
+      - '15432:5432'
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: password
