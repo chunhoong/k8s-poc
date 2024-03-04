@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usersvc-deployment
+  labels:
+    app: usersvc-rest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usersvc-rest
+  template:
+    metadata:
+      labels:
+        app: usersvc-rest
+    spec:
+      containers:
+      - name: usersvc-rest
+        image: reph05/usersvc-rest:latest
+        ports:
+        - containerPort: 3000
+          name: http-rest
+        env:
+          - name: DB_NAME
+            value: "userdb"
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_HOSTNAME
+            value: "db"
+          - name: DB_USER
+            value: "dbuser"
+          - name: DB_PASSWORD
+            value: "password"
+          - name: JWT_SECRET
+            value: "secret"
+          - name: USER_TOKEN_VALIDILITY_SECONDS
+            value: "3600"
+      - name: usersvc-db
+        image: postgres:16
+        ports:
+        - containerPort: 5432
+          name: http-db
+        env:
+          - name: POSTGRES_DB
+            value: "userdb"
+          - name: POSTGRES_USER
+            value: "dbuser"
+          - name: POSTGRES_PASSWORD
+            value: "password"
+      imagePullSecrets:
+      - name: regcred
